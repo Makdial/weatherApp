@@ -9,31 +9,76 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
     <title>Weather App</title>
+    <style type="text/css">
+      .good{background-color: #0C0;}
+      .moderate{background-color: #FFFF00;}
+      .unhealthy{background-color: #FF9900;}
+      .unhealthyforsensitivegroups{background-color: #FF0000;}
+      .veryunhealthy{background-color: #990066;}
+      .hazardous{background-color: #660000;}
+    </style>
+
+
   </head>
   <body>
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      {% if user.is_authenticated %}
   <a class="navbar-brand" href="{% url 'home'%}">Weather App</a>
+      {% endif %}
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="{% url 'about' %}">About <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'login'%}">Login</a>
-      </li>
+      {% if user.is_authenticated %}
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'about' %}">About <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'home' %}">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'edit_profile'%}">Edit Profile</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'change_password'%}">Change Password</a>
+        </li>
+      {% else %}
+      <a class="navbar-brand" href="{% url 'welcome' %}">Weather App</a>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'login'%}">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'register'%}">register</a>
+        </li>
+      {% endif %}
     </ul>
-    <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit">Search</button>
+    <form class="form-inline my-2 my-lg-0" action="{% url 'home'%}" method="POST">
+      {% csrf_token %}
+      <input class="form-control mr-sm-2" type="search" placeholder="Enter Zipcode..." aria-label="Search" name="zipcode">
+      <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit">Lookup</button>
     </form>
   </div>
 </nav>
+
+<br/><br/>
     <div class = "container">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-warning alert-dismissible col-md-6 offset-md-3" role="alert">
+            <button type="button" class="close" data-dismiss="alert">
+              <small><sup>X</sup></small>
+            </button>
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+
       {% block content %}
         <h1>Hello, world!</h1>
       {% endblock %}

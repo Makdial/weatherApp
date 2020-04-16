@@ -1,4 +1,28 @@
 {% extends 'base.html' %}
 {% block content%}
-<h1>Hello World!</h1>
+
+<br/>
+
+	{% if zipcode %}
+		{{ zipcode }}
+	{% endif %}
+
+{% if api %}
+	{% if api == "Error..." %}
+		There was an error, please try again...
+	{% else %}
+	<br/><br/>
+	<div class="jumbotron {{ category_color }}">
+	  <h1 class="display-4">{{ api.0.Category.Name }}</h1>
+	  <p><strong> Current {{ api.0.ReportingArea }} Air Quality: {{ api.0.AQI }}</strong></p>
+
+	  <p><strong>{{category_description}}</strong></p>
+
+	</div>
+	<br/>
+		
+	{% endif %}
+
+{% endif %}
+
 {% endblock %}
